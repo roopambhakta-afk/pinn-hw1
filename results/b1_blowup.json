@@ -1,0 +1,12 @@
+{
+  "r=0.45": {
+    "max_abs_u_final": 1.0
+  },
+  "r=0.5": {
+    "max_abs_u_final": 1.0
+  },
+  "r=0.51": {
+    "max_abs_u_final": 2.9170838718203995e+21,
+    "first_step_above_threshold": 202
+  }
+}
