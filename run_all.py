@@ -6,6 +6,7 @@ scripts = [
     "b1_convergence.py",
     "b1_dependent_D.py",
     "b2_pinn.py",
+    "b3_reference.py",
 ]
 
 for script in scripts:

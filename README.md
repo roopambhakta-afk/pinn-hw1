@@ -2,7 +2,7 @@
 
 Dopant diffusion and PN-junction reference solvers.
 
-Status: Part B1 (reference finite-difference solver) and Part B2 (PINN for diffusion) are complete. B3 (drift-diffusion PN junction) will be added to this repository when finished.
+Status: Parts B1 (reference finite-difference solver) and B2 (PINN for diffusion) are complete. For B3 (drift-diffusion PN junction) only the finite-difference reference solver was completed; the PINN experiments were not attempted.
 
 ## Reproduce everything
 
@@ -106,3 +106,47 @@ Limitations: 3 seeds only. Training settings were not tuned beyond one short tri
 Figure notes:
 - b2_errors.png: each dot is one seed, each bar is the mean over 3 seeds, the y axis is logarithmic, and the dashed line is the 1e-3 target.
 - b2_profiles.png: first seed, at the final time. The tanh, SiLU and hard-BC curves lie on top of the exact erfc curve (relative errors 2.5e-4 to 2e-3, too small for the plot to show), so only the ReLU curve is visibly different. The ReLU curve is made of straight segments and falls to zero far too fast, as expected for a network with no curvature.
+
+## Environment
+
+Tested with Python 3.14.0 on Windows (Git Bash). Exact package versions are in requirements.txt. Seeds and every setting are in config.json.
+
+Setup from a fresh clone:
+
+    git clone https://github.com/roopambhakta-afk/pinn-hw1
+    cd pinn-hw1
+    python -m venv .venv
+    source .venv/Scripts/activate
+    pip install -r requirements.txt
+
+On Linux or macOS use `source .venv/bin/activate` instead of the Scripts line.
+
+Run everything (B1, B2 and the B3 reference):
+
+    python run_all.py
+
+B2 takes about 3 hours on a CPU laptop. Use `python b2_pinn.py --quick` for a 1-minute crash test.
+
+## B3: PN junction reference solver (PINN part not attempted)
+
+Only the finite-difference reference for the equilibrium PN junction was done. The raw PINN, its failure plots, and the one-lever-at-a-time fixes were not attempted.
+
+How to run (settings in config.json under "b3"):
+
+    python b3_reference.py
+
+Method: the scaled Poisson equation lambda^2 psi'' = exp(psi) - exp(-psi) - N from A4 is solved with Newton's method on a uniform grid, with the doping step placed on a cell interface. Boundary values are the charge-neutral bulk potentials. Settings: N_A = 1e17, N_D = 1e18, n_i = 1e10 cm^-3, 300 K, domain +/- 500 nm, L = 250 nm.
+
+Results (grid spacing 0.25 nm):
+
+| Quantity | Finite-difference reference | Depletion approximation (A3) |
+|---|---|---|
+| V_bi (V) | 0.892896 | 0.892896 |
+| Peak field (V/cm) | 1.543e5 | 1.585e5 |
+| W (nm) | 115.74 | 112.7 |
+
+W is defined here as 2 V_bi divided by the peak field (the width of the triangle with the same area under the field curve). The numerical W is 2.7 percent larger than the depletion approximation because the real depletion edges are smooth.
+
+Verification: grid spacings 1, 0.5, 0.25 and 0.125 nm give W of 115.7556, 115.7431, 115.7399 and 115.7391 nm. The observed order from successive differences is 1.99 and 2.00, so the solver is second order. V_bi is fixed by the boundary values.
+
+Figure: figures/b3_reference.png (potential, and carriers on linear and log axes). The carrier densities span about 15 powers of ten, which is the difficulty a PINN would face.
