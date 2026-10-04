@@ -2,7 +2,7 @@
 
 Dopant diffusion and PN-junction reference solvers.
 
-Status: Part B1 (reference finite-difference solver) is complete. B2 (PINN for diffusion) and B3 (drift-diffusion PN junction) are added to this repository as they are finished.
+Status: Part B1 (reference finite-difference solver) and Part B2 (PINN for diffusion) are complete. B3 (drift-diffusion PN junction) will be added to this repository when finished.
 
 ## Reproduce everything
 
@@ -65,3 +65,44 @@ Concentration-dependent diffusivity at t = 1:
 - Crank-Nicolson uses dt = 0.5 dx, so the time and space errors are both second order. The explicit scheme keeps r near 0.4, so dt is proportional to dx^2.
 - D(C) = D0 + D-(n/ni) is modelled as D/D0 = 1 + beta*u with beta = (D-/D0)(Cs/ni), assuming n is approximately C (full ionization). The values beta = 3 and 10 are illustrative, not measured data. The nonlinear step is explicit and first order in time, with dt kept small through r_max / (1 + beta).
 - Wall-clock times are saved in `results/b1_convergence.json` for later comparison. The Crank-Nicolson times include a pure-Python tridiagonal solver, so they overstate its cost relative to a compiled banded solver.
+
+## B2: PINN from scratch
+
+Goal: train a network u(x,t) for u_t = u_xx with no PINN library, and reach a relative L2 error below 1e-3 against the exact erfc solution.
+
+How to run (settings are all in config.json, seeds 0, 1, 2):
+
+    python b2_pinn.py
+
+Setup:
+- Network: 3 hidden layers of 64 units, float64, Xavier init, inputs scaled to [-1, 1].
+- Loss: mean squared PDE residual (u_t - u_xx from autograd) plus boundary and initial-condition penalties (weights 10 and 10, 200 points per group) for the soft-BC runs.
+- Training: 3000 Adam steps (learning rate 1e-3 decaying to 1e-4), then 500 L-BFGS steps with strong-Wolfe line search.
+- Domain: x in [0, 4], t in [0.1, 1]. Left edge u = 1, right edge and start profile from erfc.
+- Error: relative L2 on a test grid (n_test in config.json) against the exact erfc solution.
+- Hard BC: u = g + d * N, where g satisfies the boundary and initial conditions exactly and d is zero on those edges. Checked on an untrained network: violation 0 at x = 0, 4.8e-35 at x = X and at t = t0.
+
+Results (mean +/- std over 3 seeds, one lever changed per row relative to the baseline):
+
+| Configuration | Relative L2 error | Training time, s | Seeds below 1e-3 |
+|---|---|---|---|
+| tanh, 1e4 pts, soft BC (baseline) | 6.52e-04 +/- 9.64e-05 | 800 +/- 36 | 3/3 |
+| SiLU, 1e4 pts, soft BC | 1.98e-03 +/- 4.88e-04 | 1427 +/- 24 | 0/3 |
+| ReLU, 1e4 pts, soft BC | 5.12e-01 +/- 6.39e-04 | 330 +/- 14 | 0/3 |
+| tanh, 1e3 pts, soft BC | 8.01e-04 +/- 2.04e-04 | 77 +/- 0 | 2/3 |
+| tanh, 1e4 pts, hard BC | 2.50e-04 +/- 2.26e-05 | 838 +/- 11 | 3/3 |
+
+Figures: figures/b2_errors.png (error per configuration) and figures/b2_profiles.png (profiles against the exact solution).
+
+Findings:
+- Hard boundary conditions gave the lowest error (2.6 times below the baseline) with a much smaller spread across seeds, at the same cost. The network no longer has to balance the PDE term against the boundary penalties.
+- ReLU fails. A ReLU network is piecewise linear, so its second derivative is zero almost everywhere (measured rms u_xx = 0.000, exact 0.349). The residual reduces to u_t = 0, which cannot describe diffusion. All three seeds end at the same error (0.511 to 0.512), so the failure is systematic.
+- ReLU's final loss (about 3e-4) is lower than the baseline's, yet its error is 51 percent. A low loss does not mean a correct solution when the loss cannot see the missing term.
+- SiLU was slower to converge under the same step budget (error 2.0e-3, loss still falling at the end). It was not tested with more steps, so this is not a claim that SiLU is worse in general.
+- With 1e3 points the error was 8.0e-4 against 6.5e-4 for 1e4 points, about 10 times faster. With 3 seeds the difference is within the spread, so it is not shown to be significant.
+
+Limitations: 3 seeds only. Training settings were not tuned beyond one short trial run. All runs on CPU.
+
+Figure notes:
+- b2_errors.png: each dot is one seed, each bar is the mean over 3 seeds, the y axis is logarithmic, and the dashed line is the 1e-3 target.
+- b2_profiles.png: first seed, at the final time. The tanh, SiLU and hard-BC curves lie on top of the exact erfc curve (relative errors 2.5e-4 to 2e-3, too small for the plot to show), so only the ReLU curve is visibly different. The ReLU curve is made of straight segments and falls to zero far too fast, as expected for a network with no curvature.

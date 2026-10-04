@@ -5,6 +5,7 @@ scripts = [
     "b1_blowup.py",
     "b1_convergence.py",
     "b1_dependent_D.py",
+    "b2_pinn.py",
 ]
 
 for script in scripts:

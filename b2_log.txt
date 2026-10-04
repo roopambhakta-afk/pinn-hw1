@@ -1,0 +1,81 @@
+hard-BC check on an untrained network (all should be ~0): x=0 0.0e+00, x=X 4.8e-35, t=t0 4.8e-35
+
+=== tanh, 1e4 pts, soft BC (baseline) ===
+    adam  1000  loss 1.484e-02  elapsed 243 s
+    adam  2000  loss 5.622e-03  elapsed 486 s
+    adam  3000  loss 3.731e-03  elapsed 726 s
+  seed 0: rel L2 = 6.068e-04   time = 836.3 s   rms u_xx = 3.486e-01 (exact 3.486e-01)
+    adam  1000  loss 5.983e-03  elapsed 206 s
+    adam  2000  loss 1.980e-03  elapsed 412 s
+    adam  3000  loss 1.308e-03  elapsed 630 s
+  seed 1: rel L2 = 7.625e-04   time = 765.2 s   rms u_xx = 3.488e-01 (exact 3.486e-01)
+    adam  1000  loss 4.358e-02  elapsed 229 s
+    adam  2000  loss 1.414e-02  elapsed 464 s
+    adam  3000  loss 8.492e-03  elapsed 689 s
+  seed 2: rel L2 = 5.861e-04   time = 799.6 s   rms u_xx = 3.485e-01 (exact 3.486e-01)
+
+=== SiLU, 1e4 pts, soft BC ===
+    adam  1000  loss 3.679e-02  elapsed 409 s
+    adam  2000  loss 1.375e-02  elapsed 832 s
+    adam  3000  loss 7.710e-03  elapsed 1246 s
+  seed 0: rel L2 = 1.413e-03   time = 1453.7 s   rms u_xx = 3.487e-01 (exact 3.486e-01)
+    adam  1000  loss 2.464e-02  elapsed 401 s
+    adam  2000  loss 9.011e-03  elapsed 804 s
+    adam  3000  loss 5.091e-03  elapsed 1206 s
+  seed 1: rel L2 = 2.278e-03   time = 1419.1 s   rms u_xx = 3.482e-01 (exact 3.486e-01)
+    adam  1000  loss 4.189e-02  elapsed 401 s
+    adam  2000  loss 6.501e-03  elapsed 798 s
+    adam  3000  loss 4.091e-03  elapsed 1198 s
+  seed 2: rel L2 = 2.238e-03   time = 1408.5 s   rms u_xx = 3.481e-01 (exact 3.486e-01)
+
+=== ReLU, 1e4 pts, soft BC ===
+    adam  1000  loss 8.732e-04  elapsed 88 s
+    adam  2000  loss 4.694e-04  elapsed 176 s
+    adam  3000  loss 2.922e-04  elapsed 263 s
+  seed 0: rel L2 = 5.110e-01   time = 328.3 s   rms u_xx = 0.000e+00 (exact 3.486e-01)
+    adam  1000  loss 1.356e-03  elapsed 87 s
+    adam  2000  loss 4.344e-04  elapsed 195 s
+    adam  3000  loss 2.938e-04  elapsed 306 s
+  seed 1: rel L2 = 5.120e-01   time = 317.1 s   rms u_xx = 0.000e+00 (exact 3.486e-01)
+    adam  1000  loss 1.533e-03  elapsed 113 s
+    adam  2000  loss 7.096e-04  elapsed 224 s
+    adam  3000  loss 5.258e-04  elapsed 336 s
+  seed 2: rel L2 = 5.122e-01   time = 344.9 s   rms u_xx = 0.000e+00 (exact 3.486e-01)
+
+=== tanh, 1e3 pts, soft BC ===
+    adam  1000  loss 1.454e-02  elapsed 21 s
+    adam  2000  loss 5.753e-03  elapsed 42 s
+    adam  3000  loss 3.464e-03  elapsed 63 s
+  seed 0: rel L2 = 7.167e-04   time = 76.8 s   rms u_xx = 3.486e-01 (exact 3.486e-01)
+    adam  1000  loss 7.124e-03  elapsed 21 s
+    adam  2000  loss 3.362e-03  elapsed 42 s
+    adam  3000  loss 2.426e-03  elapsed 64 s
+  seed 1: rel L2 = 1.034e-03   time = 77.2 s   rms u_xx = 3.481e-01 (exact 3.486e-01)
+    adam  1000  loss 4.420e-02  elapsed 21 s
+    adam  2000  loss 1.386e-02  elapsed 42 s
+    adam  3000  loss 8.023e-03  elapsed 64 s
+  seed 2: rel L2 = 6.532e-04   time = 77.5 s   rms u_xx = 3.486e-01 (exact 3.486e-01)
+
+=== tanh, 1e4 pts, hard BC ===
+    adam  1000  loss 1.237e-03  elapsed 240 s
+    adam  2000  loss 4.129e-04  elapsed 465 s
+    adam  3000  loss 2.583e-04  elapsed 696 s
+  seed 0: rel L2 = 2.330e-04   time = 832.4 s   rms u_xx = 3.487e-01 (exact 3.486e-01)
+    adam  1000  loss 1.435e-03  elapsed 230 s
+    adam  2000  loss 5.183e-04  elapsed 466 s
+    adam  3000  loss 3.150e-04  elapsed 713 s
+  seed 1: rel L2 = 2.410e-04   time = 850.5 s   rms u_xx = 3.486e-01 (exact 3.486e-01)
+    adam  1000  loss 2.446e-03  elapsed 252 s
+    adam  2000  loss 7.790e-04  elapsed 483 s
+    adam  3000  loss 4.347e-04  elapsed 709 s
+  seed 2: rel L2 = 2.756e-04   time = 830.7 s   rms u_xx = 3.487e-01 (exact 3.486e-01)
+
+| Configuration | Relative L2 error (mean +/- std) | Training time, s (mean +/- std) | Seeds below target |
+|---|---|---|---|
+| tanh, 1e4 pts, soft BC (baseline) | 6.52e-04 +/- 9.64e-05 | 800 +/- 36 | 3/3 |
+| SiLU, 1e4 pts, soft BC | 1.98e-03 +/- 4.88e-04 | 1427 +/- 24 | 0/3 |
+| ReLU, 1e4 pts, soft BC | 5.12e-01 +/- 6.39e-04 | 330 +/- 14 | 0/3 |
+| tanh, 1e3 pts, soft BC | 8.01e-04 +/- 2.04e-04 | 77 +/- 0 | 2/3 |
+| tanh, 1e4 pts, hard BC | 2.50e-04 +/- 2.26e-05 | 838 +/- 11 | 3/3 |
+
+saved figures/b2_errors.png, figures/b2_profiles.png, results/b2_table.md
