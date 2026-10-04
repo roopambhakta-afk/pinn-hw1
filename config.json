@@ -4,13 +4,47 @@
     "X": 10.0,
     "t0": 0.1,
     "T": 1.0,
-    "blowup": {"dx": 0.05, "r_list": [0.45, 0.5, 0.51], "steps": 1500, "threshold": 2.0},
-    "convergence": {"dx_list": [0.2, 0.1, 0.05, 0.025], "cn_dt_over_dx": 0.5, "explicit_r": 0.4},
-    "dependent_D": {"dx": 0.05, "beta_list": [0.0, 3.0, 10.0], "r_max": 0.4}
+    "blowup": {
+      "dx": 0.05,
+      "r_list": [
+        0.45,
+        0.5,
+        0.51
+      ],
+      "steps": 1500,
+      "threshold": 2.0
+    },
+    "convergence": {
+      "dx_list": [
+        0.2,
+        0.1,
+        0.05,
+        0.025
+      ],
+      "cn_dt_over_dx": 0.5,
+      "explicit_r": 0.4
+    },
+    "dependent_D": {
+      "dx": 0.05,
+      "beta_list": [
+        0.0,
+        3.0,
+        10.0
+      ],
+      "r_max": 0.4
+    }
   },
   "b2": {
-    "domain": {"X": 4.0, "t0": 0.1, "T": 1.0},
-    "hidden": [64, 64, 64],
+    "domain": {
+      "X": 4.0,
+      "t0": 0.1,
+      "T": 1.0
+    },
+    "hidden": [
+      64,
+      64,
+      64
+    ],
     "adam_iters": 3000,
     "lr0": 0.001,
     "lr1": 0.0001,
@@ -18,16 +52,65 @@
     "n_boundary": 200,
     "lam_b": 10.0,
     "lam_i": 10.0,
-    "seeds": [0, 1, 2],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
     "n_test": 101,
     "log_every": 1000,
     "target": 0.001,
     "runs": [
-      {"name": "tanh, 1e4 pts, soft BC (baseline)", "act": "tanh", "n_colloc": 10000, "hard": false},
-      {"name": "SiLU, 1e4 pts, soft BC", "act": "silu", "n_colloc": 10000, "hard": false},
-      {"name": "ReLU, 1e4 pts, soft BC", "act": "relu", "n_colloc": 10000, "hard": false},
-      {"name": "tanh, 1e3 pts, soft BC", "act": "tanh", "n_colloc": 1000, "hard": false},
-      {"name": "tanh, 1e4 pts, hard BC", "act": "tanh", "n_colloc": 10000, "hard": true}
+      {
+        "name": "tanh, 1e4 pts, soft BC (baseline)",
+        "act": "tanh",
+        "n_colloc": 10000,
+        "hard": false
+      },
+      {
+        "name": "SiLU, 1e4 pts, soft BC",
+        "act": "silu",
+        "n_colloc": 10000,
+        "hard": false
+      },
+      {
+        "name": "ReLU, 1e4 pts, soft BC",
+        "act": "relu",
+        "n_colloc": 10000,
+        "hard": false
+      },
+      {
+        "name": "tanh, 1e3 pts, soft BC",
+        "act": "tanh",
+        "n_colloc": 1000,
+        "hard": false
+      },
+      {
+        "name": "tanh, 1e4 pts, hard BC",
+        "act": "tanh",
+        "n_colloc": 10000,
+        "hard": true
+      }
     ]
+  },
+  "b3": {
+    "T_K": 300.0,
+    "NA": 1e+17,
+    "ND": 1e+18,
+    "ni": 10000000000.0,
+    "eps_r": 11.7,
+    "L_nm": 250.0,
+    "half_width_nm": 500.0,
+    "ref": {
+      "h_nm": 0.25,
+      "convergence_h_nm": [
+        1.0,
+        0.5,
+        0.25,
+        0.125
+      ],
+      "tol": 1e-10,
+      "max_iter": 200
+    }
   }
 }
